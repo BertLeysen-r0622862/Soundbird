@@ -52,7 +52,7 @@ public class CreateSoundsTask extends AsyncTask<SoundBoardService, Void, List<So
         if (activity == null)
             return;
 
-        final SoundPlayer soundPlayer = new SoundPlayer(sound);
+        final SoundPlayer soundPlayer = new SoundPlayer(sound, activity.getApplicationContext());
 
         Button button = new Button(activity);
         button.setText(sound.getName());
