@@ -1,5 +1,6 @@
 package be.wienert.soundbird;
 
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 
@@ -18,9 +19,9 @@ public class SoundPlayer {
     private MediaPlayer mediaPlayer = new MediaPlayer();
     private STATE state = STATE.NOT_PREPARED;
 
-    public SoundPlayer(Sound sound) throws IOException {
+    public SoundPlayer(Sound sound, Context context) throws IOException {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setDataSource("http://178.128.244.80/sounds/" + sound.getId());
+        mediaPlayer.setDataSource(context, sound.getUri());
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
