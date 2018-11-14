@@ -47,14 +47,9 @@ public class SoundBoardRestService implements SoundBoardService {
         }
         List<Sound> sounds = response.body();
         for (Sound sound : sounds) {
-            sound.setService(this);
+            sound.setUri(Uri.parse(SERVER_URL + "sounds/" + sound.getId()));
         }
         return sounds;
-    }
-
-    @Override
-    public Uri getSoundUrl(Sound sound) {
-        return Uri.parse(SERVER_URL + "sounds/" + sound.getId());
     }
 
     private interface SoundsRestServiceInterface {
