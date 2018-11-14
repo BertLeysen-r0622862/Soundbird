@@ -2,32 +2,42 @@ package be.wienert.soundbird.model;
 
 import android.net.Uri;
 
-import be.wienert.soundbird.service.SoundBoardService;
-
 public class Sound {
-    private final int id;
-    private final String name;
-    private SoundBoardService service;
+    private int id;
+    private String name;
+    private Uri uri;
 
-    public Sound(int id, String name, SoundBoardService service) {
+    public Sound(int id, String name, Uri uri) {
         this.id = id;
         this.name = name;
-        this.service = service;
+        this.uri = uri;
+    }
+
+    public Sound(Sound sound) {
+        this(sound.id, sound.name, sound.uri);
     }
 
     public int getId() {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
 
-    public Uri getUri() {
-        return service.getSoundUrl(this);
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setService(SoundBoardService service) {
-        this.service = service;
+    public Uri getUri() {
+        return uri;
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri;
     }
 }
