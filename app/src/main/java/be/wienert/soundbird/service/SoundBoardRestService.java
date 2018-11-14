@@ -1,5 +1,7 @@
 package be.wienert.soundbird.service;
 
+import android.net.Uri;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -13,11 +15,13 @@ import retrofit2.http.GET;
 
 public class SoundBoardRestService implements SoundBoardService {
 
+    private static String SERVER_URL = "http://178.128.244.80/";
+
     private SoundsRestServiceInterface service;
 
     public SoundBoardRestService() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://178.128.244.80/")
+                .baseUrl(SERVER_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -41,7 +45,11 @@ public class SoundBoardRestService implements SoundBoardService {
         if (!response.isSuccessful()) {
             throw new IOException(response.errorBody().string());
         }
-        return response.body();
+        List<Sound> sounds = response.body();
+        for (Sound sound : sounds) {
+            sound.setUri(Uri.parse(SERVER_URL + "sounds/" + sound.getId()));
+        }
+        return sounds;
     }
 
     private interface SoundsRestServiceInterface {

@@ -17,9 +17,11 @@ import be.wienert.soundbird.service.SoundBoardService;
 public class CreateSoundsTask extends AsyncTask<SoundBoardService, Void, List<Sound>> {
 
     private WeakReference<Activity> activityRef;
+    private SoundDownloader soundDownloader;
 
     CreateSoundsTask(Activity activity) {
         activityRef = new WeakReference<>(activity);
+        soundDownloader = new SoundDownloader(activity.getApplicationContext());
     }
 
     @Override
@@ -27,7 +29,11 @@ public class CreateSoundsTask extends AsyncTask<SoundBoardService, Void, List<So
         SoundBoardService service = soundBoardServices[0];
 
         try {
-            return service.getSounds();
+            List<Sound> sounds = service.getSounds();
+            for (Sound sound : sounds) {
+                sound.setUri(soundDownloader.download(sound));
+            }
+            return sounds;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,7 +58,7 @@ public class CreateSoundsTask extends AsyncTask<SoundBoardService, Void, List<So
         if (activity == null)
             return;
 
-        final SoundPlayer soundPlayer = new SoundPlayer(sound);
+        final SoundPlayer soundPlayer = new SoundPlayer(sound, activity.getApplicationContext());
 
         Button button = new Button(activity);
         button.setText(sound.getName());
