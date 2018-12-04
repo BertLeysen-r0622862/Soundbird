@@ -41,7 +41,7 @@ public class AddButtonActivity extends AppCompatActivity {
         saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(buttonListener);
 
-        cancelButton = (Button) findViewById(R.id.saveButton);
+        cancelButton = (Button) findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(buttonListener);
     }
 
@@ -50,11 +50,15 @@ public class AddButtonActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.filedialogButton:
-                    Intent pickAudioIntent = new Intent(
+                    /*Intent pickAudioIntent = new Intent(
                             Intent.ACTION_PICK,
                             android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
                     );
-                    startActivityForResult(pickAudioIntent, REQUEST_PICK_AUDIO);
+                    startActivityForResult(pickAudioIntent, REQUEST_PICK_AUDIO);*/
+                    Intent intent_upload = new Intent();
+                    intent_upload.setType("audio/*");
+                    intent_upload.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(intent_upload,1);
                     break;
 
                 case R.id.saveButton:
@@ -62,18 +66,35 @@ public class AddButtonActivity extends AppCompatActivity {
                     EditText buttonNameEdit = (EditText) findViewById(R.id.editText);
                     buttonName = buttonNameEdit.getText().toString();
                     Log.i("saveButton",buttonName);
+                    break;
 
-
+                case R.id.cancelButton:
+                    finish();
                 break;
             }
         }
     };
 
+    @Override
+    protected void onActivityResult(int requestCode,int resultCode,Intent data){
+
+        if(requestCode == 1){
+
+            if(resultCode == RESULT_OK){
+
+                //the selected audio.
+                Uri uri = data.getData();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /*
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
                 if (RESULT_OK == resultCode) {
                     audioUri = intent.getData();
                 }
-    }
+    }*/
 }
 
 
