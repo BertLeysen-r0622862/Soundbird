@@ -2,6 +2,7 @@ package be.wienert.soundbird;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +15,7 @@ import be.wienert.soundbird.service.SoundBoardService;
 public class MainActivity extends AppCompatActivity {
 
     private SoundBoardService service;
-    private Button toAddButton;
+    private FloatingActionButton toAddButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toAddButton = (Button) findViewById(R.id.toAddButton);
+        toAddButton = (FloatingActionButton) findViewById(R.id.toAddButton);
         toAddButton.setOnClickListener(buttonListener);
 
         service = new SoundBoardRestService();
