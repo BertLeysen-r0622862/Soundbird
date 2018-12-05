@@ -18,10 +18,12 @@ public class CreateSoundsTask extends AsyncTask<SoundBoardService, Void, List<So
 
     private WeakReference<Activity> activityRef;
     private SoundDownloader soundDownloader;
+    private final SoundPlayer soundPlayer;
 
     CreateSoundsTask(Activity activity) {
         activityRef = new WeakReference<>(activity);
         soundDownloader = new SoundDownloader(activity.getApplicationContext());
+        soundPlayer = new SoundPlayer(activity.getApplicationContext());
     }
 
     @Override
@@ -45,26 +47,24 @@ public class CreateSoundsTask extends AsyncTask<SoundBoardService, Void, List<So
         super.onPostExecute(sounds);
 
         for (Sound sound : sounds) {
-            try {
-                addSound(sound);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            addSound(sound);
         }
     }
 
-    private void addSound(Sound sound) throws IOException {
+    private void addSound(final Sound sound) {
         Activity activity = activityRef.get();
         if (activity == null)
             return;
-
-        final SoundPlayer soundPlayer = new SoundPlayer(sound, activity.getApplicationContext());
 
         Button button = new Button(activity);
         button.setText(sound.getName());
         button.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                soundPlayer.start();
+                try {
+                    soundPlayer.play(sound);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
