@@ -1,100 +1,78 @@
 package be.wienert.soundbird;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.LogPrinter;
 import android.view.View;
-import android.widget.Button;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.concurrent.ThreadLocalRandom;
 
-import static android.content.Intent.ACTION_GET_CONTENT;
-import static android.content.Intent.ACTION_OPEN_DOCUMENT;
-import static android.content.Intent.ACTION_PICK;
+import be.wienert.soundbird.model.Sound;
 
 public class AddButtonActivity extends AppCompatActivity {
-    protected static final int REQUEST_PICK_AUDIO = 1;
-    private Button fileDialogButton;
-    private Uri audioUri;
-    private Button saveButton;
-    private Button cancelButton;
-    private ImageView mImageView;
-    private String buttonName;
-
+    private static final int READ_REQUEST_CODE = 42;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_button);
 
-        fileDialogButton = (Button) findViewById(R.id.filedialogButton);
-        fileDialogButton.setOnClickListener(buttonListener);
-
-        saveButton = (Button) findViewById(R.id.saveButton);
-        saveButton.setOnClickListener(buttonListener);
-
-        cancelButton = (Button) findViewById(R.id.cancelButton);
-        cancelButton.setOnClickListener(buttonListener);
-    }
-
-    private View.OnClickListener buttonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.filedialogButton:
-                    /*Intent pickAudioIntent = new Intent(
-                            Intent.ACTION_PICK,
-                            android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-                    );
-                    startActivityForResult(pickAudioIntent, REQUEST_PICK_AUDIO);*/
-                    Intent intent_upload = new Intent();
-                    intent_upload.setType("audio/*");
-                    intent_upload.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(intent_upload,1);
-                    break;
-
-                case R.id.saveButton:
-
-                    EditText buttonNameEdit = (EditText) findViewById(R.id.editText);
-                    buttonName = buttonNameEdit.getText().toString();
-                    Log.i("saveButton",buttonName);
-                    break;
-
-                case R.id.cancelButton:
-                    finish();
-                break;
+        Button fileDialogButton = findViewById(R.id.filedialogButton);
+        fileDialogButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.setType("audio/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent, READ_REQUEST_CODE);
             }
-        }
-    };
+        });
+
+        Button saveButton = findViewById(R.id.saveButton);
+        saveButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText buttonNameEdit = findViewById(R.id.editText);
+                String buttonName = buttonNameEdit.getText().toString();
+                Log.i("saveButton", buttonName);
+            }
+        });
+
+        Button cancelButton = findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
 
     @Override
-    protected void onActivityResult(int requestCode,int resultCode,Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
 
-        if(requestCode == 1){
-
-            if(resultCode == RESULT_OK){
-
-                //the selected audio.
-                Uri uri = data.getData();
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (resultData != null) {
+                Uri audioUri = resultData.getData();
+                String name = ((EditText) findViewById(R.id.editText)).getText().toString();
+                addSound(name, audioUri);
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /*
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-                if (RESULT_OK == resultCode) {
-                    audioUri = intent.getData();
-                }
-    }*/
+    private void addSound(String name, Uri uri) {
+        final Sound sound = new Sound(ThreadLocalRandom.current().nextInt(1, 100000), name, uri);
+
+        Log.i("SoundBird", "Added sound Name: " + name + ", Uri: " + uri.toString());
+
+        // TODO add sound
+    }
+
 }
 
 
