@@ -38,7 +38,10 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.toAddButton:
-                    startActivity(new Intent(MainActivity.this, AddButtonActivity.class));
+                    AddButtonActivity aba = new AddButtonActivity(MainActivity.this);
+                    Intent it = new Intent(MainActivity.this , AddButtonActivity.class);
+                    it.putExtra("Mac",MainActivity.this);
+                    aba.startActivity(new Intent(MainActivity.this));
                     break;
             }
         }

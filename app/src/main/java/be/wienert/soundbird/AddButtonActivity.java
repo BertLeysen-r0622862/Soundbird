@@ -10,13 +10,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 
+import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
 import be.wienert.soundbird.model.Sound;
 
 public class AddButtonActivity extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
+    MainActivity mac;
+
+    public AddButtonActivity(MainActivity mainActivity){
+        this.mac = mainActivity;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +77,20 @@ public class AddButtonActivity extends AppCompatActivity {
 
         Log.i("SoundBird", "Added sound Name: " + name + ", Uri: " + uri.toString());
 
-        // TODO add sound
+        Button button = new Button(mac);
+        button.setText(sound.getName());
+        button.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                try {
+                    soundPlayer.play(sound);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        GridLayout gridLayout = activity.findViewById(R.id.grid_layout);
+        gridLayout.addView(button);
     }
 
 }
