@@ -3,6 +3,7 @@ package be.wienert.soundbird.model;
 import android.net.Uri;
 
 public class Sound {
+    //ID TYPE
     private int id;
     private String name;
     private Uri uri;

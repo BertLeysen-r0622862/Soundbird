@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -21,15 +22,18 @@ import be.wienert.soundbird.model.Sound;
 public class AddButtonActivity extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
     MainActivity mac;
+    Uri dataUri;
+    String buttonName= "fout";
 
-    public AddButtonActivity(MainActivity mainActivity){
-        this.mac = mainActivity;
+    public AddButtonActivity(){
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_button);
+
 
         //back button
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -51,9 +55,11 @@ public class AddButtonActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 EditText buttonNameEdit = findViewById(R.id.editText);
-                String buttonName = buttonNameEdit.getText().toString();
-                Log.i("saveButton", buttonName);
-            }
+                //String buttonName = buttonNameEdit.getText().toString();
+                Log.i("saveButton", buttonName + dataUri);
+                addSound(buttonName, dataUri); }
+
+
         });
     }
 
@@ -73,32 +79,19 @@ public class AddButtonActivity extends AppCompatActivity {
 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
-                Uri audioUri = resultData.getData();
-                String name = ((EditText) findViewById(R.id.editText)).getText().toString();
-                addSound(name, audioUri);
+                 dataUri = resultData.getData();
+                 buttonName = ((EditText) findViewById(R.id.editText)).getText().toString();
             }
         }
     }
 
     private void addSound(String name, Uri uri) {
         final Sound sound = new Sound(ThreadLocalRandom.current().nextInt(1, 100000), name, uri);
-
         Log.i("SoundBird", "Added sound Name: " + name + ", Uri: " + uri.toString());
 
-        Button button = new Button(mac);
-        button.setText(sound.getName());
-        button.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) {
-                try {
-                    soundPlayer.play(sound);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        MainActivity.createSoundTask.addSound(sound);
+        finish();
 
-        GridLayout gridLayout = activity.findViewById(R.id.grid_layout);
-        gridLayout.addView(button);
     }
 
 }

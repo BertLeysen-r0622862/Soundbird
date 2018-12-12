@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SoundBoardService service;
     private FloatingActionButton toAddButton;
+    public static CreateSoundsTask createSoundTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
         toAddButton.setOnClickListener(buttonListener);
 
         service = new SoundBoardRestService();
-        new CreateSoundsTask(this).execute(service);
+        createSoundTask=new CreateSoundsTask(this);
+        createSoundTask.execute(service);
 
         //Intent intentAddFile = new Intent(this,AddButtonActivity.class);
         //startActivity(intentAddFile);
@@ -38,12 +40,9 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.toAddButton:
-                    AddButtonActivity aba = new AddButtonActivity(MainActivity.this);
-                    Intent it = new Intent(MainActivity.this , AddButtonActivity.class);
-                    it.putExtra("Mac",MainActivity.this);
-                    aba.startActivity(new Intent(MainActivity.this));
+                    startActivity(new Intent(MainActivity.this, AddButtonActivity.class));
                     break;
-            }
+                    }
         }
     };
 }

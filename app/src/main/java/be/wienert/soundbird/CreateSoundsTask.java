@@ -1,6 +1,7 @@
 package be.wienert.soundbird;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +19,7 @@ public class CreateSoundsTask extends AsyncTask<SoundBoardService, Void, List<So
 
     private WeakReference<Activity> activityRef;
     private SoundDownloader soundDownloader;
-    private final SoundPlayer soundPlayer;
+    public final SoundPlayer soundPlayer;
 
     CreateSoundsTask(Activity activity) {
         activityRef = new WeakReference<>(activity);
@@ -51,7 +52,8 @@ public class CreateSoundsTask extends AsyncTask<SoundBoardService, Void, List<So
         }
     }
 
-    private void addSound(final Sound sound) {
+    //Adding sound by Sound
+    public void addSound(final Sound sound) {
         Activity activity = activityRef.get();
         if (activity == null)
             return;
@@ -70,5 +72,11 @@ public class CreateSoundsTask extends AsyncTask<SoundBoardService, Void, List<So
 
         GridLayout gridLayout = activity.findViewById(R.id.grid_layout);
         gridLayout.addView(button);
+    }
+
+    //Adding sound by name and uri
+    private void addSound(String name,Uri uri){
+        Sound sound = new Sound(7,name,uri);
+        addSound(sound);
     }
 }
