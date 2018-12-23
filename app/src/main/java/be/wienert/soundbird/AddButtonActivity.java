@@ -53,19 +53,18 @@ public class AddButtonActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 EditText buttonNameEdit = findViewById(R.id.editText);
-                if (buttonNameEdit.length() == 0){
+                if (buttonNameEdit.length() <= 0){
                     buttonNameEdit.setError("Enter a Name");
-                }
-                //String buttonName = buttonNameEdit.getText().toString();
-                Log.i("saveButton", buttonName + dataUri);
-                if (dataUri != null) {
-                    addSound(buttonName, dataUri);
+                } else if (buttonNameEdit.length() > 10){
+                    buttonNameEdit.setError("Button Name is too long");
+                } else {
+                    Log.i("saveButton", buttonName + dataUri);
+                    if (dataUri != null) {
+                        addSound(buttonName, dataUri);
+                    }
                 }
             }
-
-
         });
     }
 

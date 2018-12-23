@@ -71,6 +71,8 @@ public class CreateSoundsTask extends AsyncTask<SoundBoardService, Void, List<So
         });
 
         GridLayout gridLayout = activity.findViewById(R.id.grid_layout);
+        GridLayout.LayoutParams parem = new GridLayout.LayoutParams(GridLayout.spec(GridLayout.UNDEFINED, 0.5f), GridLayout.spec(GridLayout.UNDEFINED, 1f));
+        button.setLayoutParams(parem);
         gridLayout.addView(button);
     }
 
