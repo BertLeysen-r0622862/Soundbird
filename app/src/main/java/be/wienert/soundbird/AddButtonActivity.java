@@ -59,6 +59,7 @@ public class AddButtonActivity extends AppCompatActivity {
                 } else if (buttonNameEdit.length() > 10){
                     buttonNameEdit.setError("Button Name is too long");
                 } else {
+                    buttonName = ((EditText) findViewById(R.id.editText)).getText().toString();
                     Log.i("saveButton", buttonName + dataUri);
                     if (dataUri != null) {
                         addSound(buttonName, dataUri);
@@ -85,7 +86,7 @@ public class AddButtonActivity extends AppCompatActivity {
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
                  dataUri = resultData.getData();
-                 buttonName = ((EditText) findViewById(R.id.editText)).getText().toString();
+                 //buttonName = ((EditText) findViewById(R.id.editText)).getText().toString();
             }
         }
     }
