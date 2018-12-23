@@ -1,8 +1,12 @@
 package be.wienert.soundbird;
 
 import android.app.Activity;
+import android.graphics.Paint;
+import android.graphics.*;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.widget.TextViewCompat;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -71,8 +75,12 @@ public class CreateSoundsTask extends AsyncTask<SoundBoardService, Void, List<So
         });
 
         GridLayout gridLayout = activity.findViewById(R.id.grid_layout);
-        GridLayout.LayoutParams parem = new GridLayout.LayoutParams(GridLayout.spec(GridLayout.UNDEFINED, 0.5f), GridLayout.spec(GridLayout.UNDEFINED, 1f));
+        GridLayout.LayoutParams parem = new GridLayout.LayoutParams(GridLayout.spec(GridLayout.UNDEFINED, 1f), GridLayout.spec(GridLayout.UNDEFINED, 1f));
         button.setLayoutParams(parem);
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(button, 1, 80, 10,TypedValue.COMPLEX_UNIT_DIP);
+        button.setTextSize(5+40/button.getText().toString().length());
+        button.setIncludeFontPadding(false);
+        button.setPadding(0,0,0,0);
         gridLayout.addView(button);
     }
 
