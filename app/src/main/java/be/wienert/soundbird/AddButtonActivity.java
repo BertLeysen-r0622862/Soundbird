@@ -34,7 +34,6 @@ public class AddButtonActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_button);
 
-
         //back button
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -54,10 +53,17 @@ public class AddButtonActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 EditText buttonNameEdit = findViewById(R.id.editText);
+                if (buttonNameEdit.length() == 0){
+                    buttonNameEdit.setError("Enter a Name");
+                }
                 //String buttonName = buttonNameEdit.getText().toString();
                 Log.i("saveButton", buttonName + dataUri);
-                addSound(buttonName, dataUri); }
+                if (dataUri != null) {
+                    addSound(buttonName, dataUri);
+                }
+            }
 
 
         });
