@@ -78,9 +78,14 @@ public class CreateSoundsTask extends AsyncTask<SoundBoardService, Void, List<So
         GridLayout.LayoutParams parem = new GridLayout.LayoutParams(GridLayout.spec(GridLayout.UNDEFINED, 1f), GridLayout.spec(GridLayout.UNDEFINED, 1f));
         button.setLayoutParams(parem);
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(button, 1, 80, 10,TypedValue.COMPLEX_UNIT_DIP);
-        button.setTextSize(5+40/button.getText().toString().length());
+
+        int size = 5+40/button.getText().toString().length();
+        size = (size>=15)?15:size;
+        size = (size<11)?11:size;
+        button.setTextSize(size);
         button.setIncludeFontPadding(false);
         button.setPadding(0,0,0,0);
+
         gridLayout.addView(button);
     }
 
