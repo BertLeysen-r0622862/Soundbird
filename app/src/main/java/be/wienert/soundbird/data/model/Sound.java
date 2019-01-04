@@ -6,6 +6,7 @@ import android.arch.persistence.room.TypeConverters;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import be.wienert.soundbird.data.local.UUIDConverter;
@@ -52,5 +53,19 @@ public class Sound {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sound sound = (Sound) o;
+        return Objects.equals(uuid, sound.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(uuid);
     }
 }

@@ -15,6 +15,8 @@ import be.wienert.soundbird.util.SoundPlayer;
 public class SoundsViewModel extends AndroidViewModel {
     private DataManager dataManager;
     private SoundPlayer soundPlayer;
+    private LiveData<List<Sound>> localSounds = null;
+    private LiveData<List<Sound>> remoteSounds = null;
 
     public SoundsViewModel(@NonNull Application application, DataManager dataManager, SoundPlayer soundPlayer) {
         super(application);
@@ -23,11 +25,17 @@ public class SoundsViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Sound>> getLocalSounds() {
-        return dataManager.getLocalSounds();
+        if (localSounds == null) {
+            localSounds = dataManager.getLocalSounds();
+        }
+        return localSounds;
     }
 
     public LiveData<List<Sound>> getRemoteSounds() {
-        return dataManager.getRemoteSounds();
+        if (remoteSounds == null) {
+            remoteSounds = dataManager.getRemoteSounds();
+        }
+        return remoteSounds;
     }
 
     public void play(Sound sound) throws IOException {
