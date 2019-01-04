@@ -60,6 +60,10 @@ public class AddSoundActivity extends AppCompatActivity {
             soundNameEditText.setError("Enter a name");
             return;
         }
+        if(selectedFileTextView.getText().equals("none")){
+            soundNameEditText.setError("No file selected");
+            return;
+        }
 
         try {
             viewModel.addLocalSound(soundNameEditText.getText().toString(), getContentResolver().openInputStream(fileUri))
