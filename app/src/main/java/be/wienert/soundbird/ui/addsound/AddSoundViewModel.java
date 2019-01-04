@@ -17,7 +17,7 @@ public class AddSoundViewModel extends AndroidViewModel {
         this.dataManager = dataManager;
     }
 
-    public LiveData<DataManager.SoundWrapper> addSound(String name, InputStream inputStream) {
+    public LiveData<DataManager.SoundWrapper> addLocalSound(String name, InputStream inputStream) {
         return dataManager.addLocalSound(name, inputStream);
     }
 }
