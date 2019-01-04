@@ -43,6 +43,7 @@ public class DataManager {
 
     public void addRemoteToLocal(Sound sound) throws IOException {
         try {
+            Ion.getDefault(context).getConscryptMiddleware().enable(false);
             InputStream stream = Ion.with(context).load(sound.getUri().toString()).asInputStream().get();
             addLocalSound(sound.getName(), stream);
         } catch (InterruptedException | ExecutionException e) {
