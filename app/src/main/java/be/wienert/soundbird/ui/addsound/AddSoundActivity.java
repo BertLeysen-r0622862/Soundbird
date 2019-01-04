@@ -10,9 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import java.io.IOException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.io.FileNotFoundException;
 
 import be.wienert.soundbird.R;
 import be.wienert.soundbird.ui.ViewModelFactory;
@@ -57,15 +55,19 @@ public class AddSoundActivity extends AppCompatActivity {
             return;
         }
 
-        Executor myExecutor = Executors.newSingleThreadExecutor();
-        myExecutor.execute(() -> {
-            try {
-                viewModel.addSound(name.getText().toString(), getContentResolver().openInputStream(fileUri));
-                finish();
-            } catch (IllegalArgumentException | IOException e) {
-                name.setError(e.getMessage());
-            }
-        });
+        try {
+            viewModel.addSound(name.getText().toString(), getContentResolver().openInputStream(fileUri))
+                    .observe(this, soundWrapper -> {
+                        assert soundWrapper != null;
+                        if (soundWrapper.exception != null) {
+                            name.setError(soundWrapper.exception.getMessage());
+                        } else {
+                            finish();
+                        }
+                    });
+        } catch (FileNotFoundException e) {
+            name.setError("Could not open file");
+        }
     }
 
     @Override

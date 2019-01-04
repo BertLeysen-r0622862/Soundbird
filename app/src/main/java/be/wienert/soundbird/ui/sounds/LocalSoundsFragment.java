@@ -10,8 +10,6 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import be.wienert.soundbird.data.model.Sound;
 
@@ -42,9 +40,7 @@ public class LocalSoundsFragment extends SoundsFragment {
             public void onDismissed(Snackbar transientBottomBar, int event) {
                 super.onDismissed(transientBottomBar, event);
                 if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
-                    // Delete for real
-                    Executor myExecutor = Executors.newSingleThreadExecutor();
-                    myExecutor.execute(() -> viewModel.delete(sound));
+                    viewModel.delete(sound);
                 }
 
             }

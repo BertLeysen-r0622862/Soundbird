@@ -42,12 +42,12 @@ public class SoundsViewModel extends AndroidViewModel {
         soundPlayer.play(sound);
     }
 
-    public void delete(Sound sound) {
-        dataManager.deleteLocalSound(sound);
+    public LiveData<DataManager.SoundWrapper> delete(Sound sound) {
+        return dataManager.deleteLocalSound(sound);
     }
 
-    public void addRemoteToLocal(Sound sound) throws IOException {
-        dataManager.addRemoteToLocal(sound);
+    public LiveData<DataManager.SoundWrapper> addRemoteToLocal(Sound sound) {
+        return dataManager.addRemoteToLocal(sound);
     }
 
     public LiveData<Sound> addLocalToRemote(Sound sound) {

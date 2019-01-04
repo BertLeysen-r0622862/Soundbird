@@ -1,14 +1,14 @@
 package be.wienert.soundbird.data;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
 import com.koushikdutta.ion.Ion;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 
 import be.wienert.soundbird.data.local.SoundDatabaseHelper;
 import be.wienert.soundbird.data.model.Sound;
@@ -25,6 +25,18 @@ public class DataManager {
         this.context = context;
     }
 
+    private static LiveData<SoundWrapper> doAsync(AsyncSoundTask task) {
+        MutableLiveData<DataManager.SoundWrapper> data = new MutableLiveData<>();
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                data.postValue(new SoundWrapper(task.execute()));
+            } catch (Exception e) {
+                data.postValue(new SoundWrapper(e));
+            }
+        });
+        return data;
+    }
+
     public LiveData<List<Sound>> getLocalSounds() {
         return localDb.getSounds();
     }
@@ -33,25 +45,46 @@ public class DataManager {
         return restApi.getSounds();
     }
 
-    public void addLocalSound(String name, InputStream inputStream) throws IOException {
-        localDb.addSound(name, inputStream);
+    public LiveData<SoundWrapper> addLocalSound(String name, InputStream inputStream) {
+        return doAsync(() -> localDb.addSound(name, inputStream));
     }
 
-    public void deleteLocalSound(Sound sound) {
-        localDb.delete(sound);
+    public LiveData<SoundWrapper> deleteLocalSound(Sound sound) {
+        return doAsync(() -> {
+            localDb.delete(sound);
+            return sound;
+        });
     }
 
-    public void addRemoteToLocal(Sound sound) throws IOException {
-        try {
+    public LiveData<SoundWrapper> addRemoteToLocal(Sound sound) {
+        return doAsync(() -> {
             Ion.getDefault(context).getConscryptMiddleware().enable(false);
             InputStream stream = Ion.with(context).load(sound.getUri().toString()).asInputStream().get();
-            addLocalSound(sound.getName(), stream);
-        } catch (InterruptedException | ExecutionException e) {
-            throw new IOException(e);
-        }
+            return localDb.addSound(sound.getName(), stream);
+        });
     }
 
     public LiveData<Sound> addLocalToRemote(Sound sound) {
         return restApi.addSound(sound);
+    }
+
+    private interface AsyncSoundTask {
+        Sound execute() throws Exception;
+    }
+
+    public static class SoundWrapper {
+        public Sound sound;
+        public Exception exception;
+
+        SoundWrapper(Sound sound) {
+            this.sound = sound;
+            this.exception = null;
+        }
+
+        SoundWrapper(Exception exception) {
+            this.exception = exception;
+            this.sound = null;
+        }
+
     }
 }

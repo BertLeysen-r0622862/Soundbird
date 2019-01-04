@@ -27,7 +27,7 @@ public class SoundDatabaseHelper {
         return db.soundDao().getSounds();
     }
 
-    public void addSound(String name, InputStream inputStream) throws IOException {
+    public Sound addSound(String name, InputStream inputStream) throws IOException {
         UUID uuid = UUID.randomUUID();
         File file = new File(context.getFilesDir(), uuid.toString() + ".mp3");
         long max_size = 1000000;
@@ -36,7 +36,9 @@ public class SoundDatabaseHelper {
             throw new IllegalArgumentException("File too big");
         }
 
-        db.soundDao().insert(new Sound(uuid, Uri.fromFile(file), name));
+        Sound sound = new Sound(uuid, Uri.fromFile(file), name);
+        db.soundDao().insert(sound);
+        return sound;
     }
 
     private long copy(InputStream inputStream, File dst, long maxSize) throws IOException {
