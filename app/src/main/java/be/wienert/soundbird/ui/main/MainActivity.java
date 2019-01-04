@@ -15,11 +15,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import be.wienert.soundbird.R;
+import be.wienert.soundbird.ui.ViewModelFactory;
 import be.wienert.soundbird.ui.addsound.AddSoundActivity;
 import be.wienert.soundbird.ui.sounds.LocalSoundsFragment;
 import be.wienert.soundbird.ui.sounds.RemoteSoundsFragment;
-import be.wienert.soundbird.ui.sounds.SoundsFragment;
-import be.wienert.soundbird.ui.ViewModelFactory;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -80,9 +79,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             switch (position) {
-                case 0: return new LocalSoundsFragment();
-                case 1: return new RemoteSoundsFragment();
-                default: return null;
+                case 0:
+                    return new LocalSoundsFragment();
+                case 1:
+                    return new RemoteSoundsFragment();
+                default:
+                    return null;
             }
         }
 
@@ -95,9 +97,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
-                case 0: return "Local";
-                case 1: return "Remote";
-                default: return null;
+                case 0:
+                    return "Local";
+                case 1:
+                    return "Remote";
+                default:
+                    return null;
             }
         }
     }

@@ -11,8 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.io.IOException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import be.wienert.soundbird.R;
 import be.wienert.soundbird.ui.ViewModelFactory;

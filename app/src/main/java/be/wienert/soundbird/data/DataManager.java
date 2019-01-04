@@ -2,12 +2,9 @@ package be.wienert.soundbird.data;
 
 import android.arch.lifecycle.LiveData;
 import android.content.Context;
-import android.net.Uri;
 
 import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.future.ResponseFuture;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -51,5 +48,9 @@ public class DataManager {
         } catch (InterruptedException | ExecutionException e) {
             throw new IOException(e);
         }
+    }
+
+    public LiveData<Sound> addLocalToRemote(Sound sound) {
+        return restApi.addSound(sound);
     }
 }

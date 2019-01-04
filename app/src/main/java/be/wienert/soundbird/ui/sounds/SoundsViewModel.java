@@ -41,4 +41,8 @@ public class SoundsViewModel extends AndroidViewModel {
     public void addRemoteToLocal(Sound sound) throws IOException {
         dataManager.addRemoteToLocal(sound);
     }
+
+    public LiveData<Sound> addLocalToRemote(Sound sound) {
+        return dataManager.addLocalToRemote(sound);
+    }
 }

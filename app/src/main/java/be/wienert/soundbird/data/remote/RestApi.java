@@ -5,11 +5,13 @@ import android.arch.lifecycle.MutableLiveData;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import be.wienert.soundbird.data.model.Sound;
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -61,29 +63,33 @@ public class RestApi {
         return data;
     }
 
-    public void addSound(Sound sound) {
-        // TODO
-    }
+    public LiveData<Sound> addSound(Sound sound) {
+        File file = new File(sound.getUri().getPath());
 
-//    public Sound addSound(Sound sound) throws IOException {
-//        File file = new File(sound.uri.getPath());
-//
-//        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-//        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), sound.name);
-//        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", String.valueOf(sound.id) + ".mp3", requestFile);
-//
-//        Call<Sound> call = service.addSound(multipartBody, name);
-//        Response<Sound> response = call.execute();
-//        if (!response.isSuccessful()) {
-//            throw new IOException(response.errorBody().string());
-//        }
-//        return response.body();
-//    }
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), sound.getName());
+        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", String.valueOf(sound.getUri()) + ".mp3", requestFile);
 
-    private class RestApiSound {
-        String uuid;
-        String name;
-        String uri;
+        final MutableLiveData<Sound> data = new MutableLiveData<>();
+
+        service.addSound(multipartBody, name).enqueue(new Callback<RestApiSound>() {
+            @Override
+            public void onResponse(@NonNull Call<RestApiSound> call, @NonNull Response<RestApiSound> response) {
+                if (response.isSuccessful()) {
+                    RestApiSound sound = response.body();
+                    data.setValue(new Sound(UUID.fromString(sound.uuid), Uri.parse(sound.uri), sound.name));
+                } else {
+                    data.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RestApiSound> call, @NonNull Throwable t) {
+                data.setValue(null);
+            }
+        });
+
+        return data;
     }
 
     private interface ApiContract {
@@ -93,6 +99,12 @@ public class RestApi {
         @Multipart
         @POST("sounds")
         Call<RestApiSound> addSound(@Part MultipartBody.Part file,
-                             @Part("name") RequestBody name);
+                                    @Part("name") RequestBody name);
+    }
+
+    private class RestApiSound {
+        String uuid;
+        String name;
+        String uri;
     }
 }
