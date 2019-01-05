@@ -5,12 +5,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
+import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import be.wienert.soundbird.R;
 import be.wienert.soundbird.data.model.Sound;
 
 public class LocalSoundsFragment extends SoundsFragment {
@@ -20,7 +22,19 @@ public class LocalSoundsFragment extends SoundsFragment {
 
         viewModel.getLocalSounds().observe(this, sounds -> soundsRecyclerView.setSounds(sounds));
 
-        soundsRecyclerView.setOnLongClickListener(this::delete);
+        registerForContextMenu(view);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.deleteButton:
+                delete(soundsRecyclerView.getLastClickedSound());
+                break;
+            case R.id.editButton:
+                break;
+        }
+        return super.onContextItemSelected(item);
     }
 
     private void delete(Sound sound) {

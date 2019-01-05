@@ -20,6 +20,7 @@ public class SoundsRecyclerView extends RecyclerView.Adapter<SoundsRecyclerView.
     private List<Sound> sounds = new ArrayList<>();
     private SoundClickListener onClickListener = null;
     private SoundClickListener onLongClickListener = null;
+    private Sound lastClickedSound = null;
 
     public void setSounds(List<Sound> sounds) {
         this.sounds = sounds;
@@ -32,6 +33,10 @@ public class SoundsRecyclerView extends RecyclerView.Adapter<SoundsRecyclerView.
 
     public void setOnLongClickListener(SoundClickListener listener) {
         onLongClickListener = listener;
+    }
+
+    public Sound getLastClickedSound() {
+        return lastClickedSound;
     }
 
     @NonNull
@@ -63,15 +68,21 @@ public class SoundsRecyclerView extends RecyclerView.Adapter<SoundsRecyclerView.
         SoundViewHolder(View view, SoundsRecyclerView soundsRecyclerView) {
             super(view);
             ButterKnife.bind(this, view);
+
             name.setOnClickListener(v -> {
+                Sound sound = soundsRecyclerView.sounds.get(this.getAdapterPosition());
+                soundsRecyclerView.lastClickedSound = sound;
+
                 if (soundsRecyclerView.onClickListener != null) {
-                    Sound sound = soundsRecyclerView.sounds.get(this.getAdapterPosition());
                     soundsRecyclerView.onClickListener.onClick(sound);
                 }
             });
+
             name.setOnLongClickListener(v -> {
+                Sound sound = soundsRecyclerView.sounds.get(this.getAdapterPosition());
+                soundsRecyclerView.lastClickedSound = sound;
+
                 if (soundsRecyclerView.onLongClickListener != null) {
-                    Sound sound = soundsRecyclerView.sounds.get(this.getAdapterPosition());
                     soundsRecyclerView.onLongClickListener.onClick(sound);
                     return true;
                 }
