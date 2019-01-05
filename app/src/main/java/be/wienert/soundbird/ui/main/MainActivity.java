@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import be.wienert.soundbird.R;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
 
     MainViewModel viewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

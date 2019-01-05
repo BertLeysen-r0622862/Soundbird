@@ -78,7 +78,7 @@ public class SoundsRecyclerView extends RecyclerView.Adapter<SoundsRecyclerView.
                 }
             });
 
-            name.setOnLongClickListener(v -> {
+           name.setOnLongClickListener(v -> {
                 Sound sound = soundsRecyclerView.sounds.get(this.getAdapterPosition());
                 soundsRecyclerView.lastClickedSound = sound;
 
