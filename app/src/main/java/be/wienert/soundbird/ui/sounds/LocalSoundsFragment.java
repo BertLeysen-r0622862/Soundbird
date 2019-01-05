@@ -1,9 +1,6 @@
 package be.wienert.soundbird.ui.sounds;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +19,6 @@ import java.util.Objects;
 
 import be.wienert.soundbird.R;
 import be.wienert.soundbird.data.model.Sound;
-import be.wienert.soundbird.ui.addsound.AddSoundActivity;
-import be.wienert.soundbird.ui.main.MainActivity;
 
 public class LocalSoundsFragment extends SoundsFragment {
     @Override
@@ -93,12 +87,8 @@ public class LocalSoundsFragment extends SoundsFragment {
 
             @Override
             public void onClick(View v) {
-                for (Sound s: sounds){
-                    if (s.getUuid() == sound.getUuid()){
-                        s.setName(ed1.getText().toString());
-                    }
-                }
-                soundsRecyclerView.setSounds(sounds);
+                sound.setName(ed1.getText().toString());
+                viewModel.update(sound).observe(getViewLifecycleOwner(), soundWrapper -> d.dismiss());
                 d.dismiss();
             }
 
