@@ -53,4 +53,8 @@ public class SoundsViewModel extends AndroidViewModel {
     public LiveData<Sound> addLocalToRemote(Sound sound) {
         return dataManager.addLocalToRemote(sound);
     }
+
+    public LiveData<DataManager.SoundWrapper> update(Sound sound) {
+        return dataManager.updateLocalSound(sound);
+    }
 }

@@ -68,6 +68,13 @@ public class DataManager {
         return restApi.addSound(sound);
     }
 
+    public LiveData<SoundWrapper> updateLocalSound(Sound sound) {
+        return doAsync(() -> {
+            localDb.update(sound);
+            return sound;
+        });
+    }
+
     private interface AsyncSoundTask {
         Sound execute() throws Exception;
     }
