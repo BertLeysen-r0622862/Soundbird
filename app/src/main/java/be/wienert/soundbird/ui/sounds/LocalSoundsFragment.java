@@ -74,6 +74,7 @@ public class LocalSoundsFragment extends SoundsFragment {
 
     public void dialogPopup(Sound sound)
     {
+        List<Sound> sounds = new ArrayList<>(Objects.requireNonNull(viewModel.getLocalSounds().getValue()));
         final Dialog d = new Dialog(getActivity()); // initialize dialog
         d.setContentView( R.layout.dialog_layout);
         d.setTitle("Edit Button");
@@ -85,13 +86,19 @@ public class LocalSoundsFragment extends SoundsFragment {
         ed2.setText(sound.getUri().getPath());*/
 
 
+
         Button b = (Button) d.findViewById(R.id.confirmEditSoundButton);
         b.setOnClickListener(new View.OnClickListener() // button 1 click
         {
 
             @Override
             public void onClick(View v) {
-                sound.setName(ed1.getText().toString());
+                for (Sound s: sounds){
+                    if (s.getUuid() == sound.getUuid()){
+                        s.setName(ed1.getText().toString());
+                    }
+                }
+                soundsRecyclerView.setSounds(sounds);
                 d.dismiss();
             }
 

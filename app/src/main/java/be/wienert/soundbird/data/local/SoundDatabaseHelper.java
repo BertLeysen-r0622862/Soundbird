@@ -64,4 +64,8 @@ public class SoundDatabaseHelper {
         File file = new File(sound.getUri().getPath());
         file.delete();
     }
+
+    public void editSound(Sound sound){
+        db.soundDao().update(sound);
+    }
 }
