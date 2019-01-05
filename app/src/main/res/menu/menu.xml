@@ -9,8 +9,8 @@
         android:title="Delete"
         app:showAsAction="never"
         android:orderInCategory="100"></item>
-    <item android:id="@+id/downloadButton"
-        android:title="Download"
+    <item android:id="@+id/uploadButton"
+        android:title="Upload"
         app:showAsAction="never"
         android:orderInCategory="100"></item>
 </menu>

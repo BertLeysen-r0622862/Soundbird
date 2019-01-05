@@ -49,21 +49,7 @@ public class DataManager {
         return doAsync(() -> localDb.addSound(name, inputStream));
     }
 
-    public LiveData<SoundWrapper> editLocalSound(Sound sound) {
-        return doAsync(() -> {
-            localDb.editSound(sound);
-            return sound;
-        });
-    }
-
     public LiveData<SoundWrapper> deleteLocalSound(Sound sound) {
-        return doAsync(() -> {
-            localDb.delete(sound);
-            return sound;
-        });
-    }
-
-    public LiveData<SoundWrapper> updateLocalSound(Sound sound) {
         return doAsync(() -> {
             localDb.delete(sound);
             return sound;

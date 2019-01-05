@@ -66,7 +66,7 @@ public class SoundDatabaseHelper {
     }
 
 
-    public void editSound(Sound sound){
+    public void update(Sound sound){
               db.soundDao().update(sound);
     }
 }

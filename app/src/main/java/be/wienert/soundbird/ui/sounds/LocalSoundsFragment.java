@@ -46,20 +46,29 @@ public class LocalSoundsFragment extends SoundsFragment {
             case R.id.editButton:
                 edit(soundsRecyclerView.getLastClickedSound());
                 break;
+            case R.id.uploadButton:
+                upload(soundsRecyclerView.getLastClickedSound());
+                break;
+
         }
         return super.onContextItemSelected(item);
     }
 
+    private void upload(Sound sound){
+        viewModel.addLocalToRemote(sound).observe(this, liveData -> {
+            assert liveData != null;
+            if (liveData != null) {
+                System.out.println("Hier zen we");
+                return;
+            }
+
+            Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), "uploaded sound", Snackbar.LENGTH_LONG);
+            snackbar.setAction("Undo", v -> viewModel.delete(liveData));
+            snackbar.show();
+        });
+    }
+
     private void edit(Sound sound) {
-        /*Intent intent = new Intent(getActivity(), EditSoundActivity.class);
-
-        Bundle extras = new Bundle();
-        extras.putString("Url",sound.getUri().getPath());
-        extras.putString("Uuid",sound.getUuid().toString());
-        extras.putString("name",sound.getName());
-
-        intent.putExtras(extras);
-        startActivity(intent);*/
 
         dialogPopup(sound);
     }
