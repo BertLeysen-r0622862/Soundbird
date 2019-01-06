@@ -20,6 +20,8 @@ public class SoundsViewModel extends AndroidViewModel {
     private SoundPlayer soundPlayer;
     private MediaMetadataRetriever mmdr = new MediaMetadataRetriever();
 
+    private LiveData<List<Sound>> localSounds;
+
     public SoundsViewModel(@NonNull Application application, DataManager dataManager, SoundPlayer soundPlayer) {
         super(application);
         this.dataManager = dataManager;
@@ -27,7 +29,10 @@ public class SoundsViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Sound>> getLocalSounds() {
-        return dataManager.getLocalSounds();
+        if (localSounds == null) {
+            localSounds = dataManager.getLocalSounds();
+        }
+        return localSounds;
     }
 
     public LiveData<List<Sound>> getRemoteSounds() {

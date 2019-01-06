@@ -10,10 +10,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import be.wienert.soundbird.R;
 import be.wienert.soundbird.ui.ViewModelFactory;
@@ -30,7 +32,8 @@ public class AddSoundActivity extends AppCompatActivity {
     @BindView(R.id.selectedFileTextView)
     TextView selectedFileTextView;
 
-    Uri fileUri;
+    @BindView(R.id.playStopButton)
+    Button playStopButton;
 
     AddSoundViewModel viewModel;
 
@@ -44,6 +47,24 @@ public class AddSoundActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        viewModel.getPlayingSound().observe(this, sound -> {
+            int icon;
+            if (sound == null) {
+                icon = R.drawable.ic_play_arrow_black_24dp;
+            } else {
+                icon = R.drawable.ic_stop_black_24dp;
+            }
+            playStopButton.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
+        });
+
+        viewModel.getFileUri().observe(this, fileUri -> {
+            if (fileUri == null) {
+                selectedFileTextView.setText("none");
+            } else {
+                selectedFileTextView.setText(getFileName(fileUri));
+            }
+        });
     }
 
     @OnClick(R.id.selectFileButton)
@@ -56,37 +77,38 @@ public class AddSoundActivity extends AppCompatActivity {
 
     @OnClick(R.id.saveSoundButton)
     public void save(View view) {
-        if (soundNameEditText.length() == 0) {
-            soundNameEditText.setError("Enter a name");
-            return;
+        try {
+            viewModel.setSoundName(soundNameEditText.getText().toString());
+        } catch (IllegalArgumentException e) {
+            soundNameEditText.setError(e.getMessage());
         }
-        if(selectedFileTextView.getText().equals("none")){
-            soundNameEditText.setError("No file selected");
+
+        Uri fileUri = viewModel.getFileUri().getValue();
+
+        InputStream stream;
+        try {
+            stream = getContentResolver().openInputStream(fileUri);
+        } catch (FileNotFoundException e) {
+            soundNameEditText.setError("Could not open file");
             return;
         }
 
-        try {
-            viewModel.addLocalSound(soundNameEditText.getText().toString(), getContentResolver().openInputStream(fileUri))
-                    .observe(this, soundWrapper -> {
-                        assert soundWrapper != null;
-                        if (soundWrapper.exception != null) {
-                            soundNameEditText.setError(soundWrapper.exception.getMessage());
-                        } else {
-                            finish();
-                        }
-                    });
-        } catch (FileNotFoundException e) {
-            soundNameEditText.setError("Could not open file");
-        }
+        viewModel.addLocalSound(stream)
+                .observe(this, soundWrapper -> {
+                    assert soundWrapper != null;
+                    if (soundWrapper.exception != null) {
+                        soundNameEditText.setError(soundWrapper.exception.getMessage());
+                    } else {
+                        finish();
+                    }
+                });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == READ_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK && resultData != null) {
-                fileUri = resultData.getData();
-                assert fileUri != null;
-                selectedFileTextView.setText(getFileName(fileUri));
+                viewModel.setFileUri(resultData.getData());
             }
         }
     }
@@ -112,5 +134,10 @@ public class AddSoundActivity extends AppCompatActivity {
             }
         }
         return "";
+    }
+
+    @OnClick(R.id.playStopButton)
+    public void playStop() {
+        viewModel.playStop();
     }
 }

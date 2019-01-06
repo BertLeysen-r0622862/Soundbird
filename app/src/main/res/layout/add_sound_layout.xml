@@ -40,13 +40,21 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Selected file: "/>
+                android:text="Selected file: " />
 
             <TextView
                 android:id="@+id/selectedFileTextView"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="none"/>
+                android:layout_weight="10"
+                android:text="none" />
+
+            <Button
+                android:id="@+id/playStopButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:drawableStart="@drawable/ic_play_arrow_black_24dp"/>
 
         </LinearLayout>
 
