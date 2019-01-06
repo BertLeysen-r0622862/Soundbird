@@ -1,8 +1,10 @@
 package be.wienert.soundbird.data;
 
+import android.app.AlertDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
+import android.content.DialogInterface;
 
 import com.koushikdutta.ion.Ion;
 
@@ -13,6 +15,7 @@ import java.util.concurrent.Executors;
 import be.wienert.soundbird.data.local.SoundDatabaseHelper;
 import be.wienert.soundbird.data.model.Sound;
 import be.wienert.soundbird.data.remote.RestApi;
+import be.wienert.soundbird.ui.main.MainActivity;
 
 public class DataManager {
     private final Context context;
@@ -37,6 +40,20 @@ public class DataManager {
             }
         });
         return data;
+    }
+
+    public AlertDialog.Builder buildDialog(Context c){
+        AlertDialog.Builder builder = new AlertDialog.Builder(c);
+        builder.setTitle("No Internet Connection");
+        builder.setMessage("You need to have Wifi or Mobile Data");
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        return builder;
+
     }
 
     public LiveData<List<Sound>> getLocalSounds() {

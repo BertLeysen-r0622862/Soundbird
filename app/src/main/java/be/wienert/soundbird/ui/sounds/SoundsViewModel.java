@@ -1,8 +1,11 @@
 package be.wienert.soundbird.ui.sounds;
 
+import android.app.AlertDialog;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.media.MediaMetadataRetriever;
 import android.support.annotation.NonNull;
 
@@ -11,6 +14,7 @@ import java.util.List;
 
 import be.wienert.soundbird.data.DataManager;
 import be.wienert.soundbird.data.model.Sound;
+import be.wienert.soundbird.ui.main.MainActivity;
 import be.wienert.soundbird.util.SoundPlayer;
 
 import static android.media.MediaMetadataRetriever.METADATA_KEY_DURATION;
@@ -34,6 +38,9 @@ public class SoundsViewModel extends AndroidViewModel {
         }
         return localSounds;
     }
+
+
+
 
     public LiveData<List<Sound>> getRemoteSounds() {
         return dataManager.getRemoteSounds();

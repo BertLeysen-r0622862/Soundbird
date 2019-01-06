@@ -1,5 +1,8 @@
 package be.wienert.soundbird.ui.main;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -75,6 +78,20 @@ public class MainActivity extends AppCompatActivity {
     @NonNull
     public MainViewModel getViewModel() {
         return ViewModelFactory.getInstance(getApplication()).create(MainViewModel.class);
+    }
+
+    public AlertDialog.Builder buildDialog(Context c){
+        AlertDialog.Builder builder = new AlertDialog.Builder(c);
+        builder.setTitle("No Internet Connection");
+        builder.setMessage("You need to have Wifi or Mobile Data");
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        return builder;
+
     }
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
