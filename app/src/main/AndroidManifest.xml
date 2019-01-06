@@ -17,6 +17,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
         <activity android:name=".ui.main.MainActivity"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
