@@ -85,6 +85,8 @@ public class AddSoundActivity extends AppCompatActivity {
 
     @OnClick(R.id.saveSoundButton)
     public void save(View view) {
+        viewModel.stop();
+
         try {
             viewModel.setSoundName(soundNameEditText.getText().toString());
         } catch (IllegalArgumentException e) {
@@ -92,18 +94,10 @@ public class AddSoundActivity extends AppCompatActivity {
             return;
         }
 
-        Uri fileUri = viewModel.getFileUri().getValue();
-
-        InputStream stream;
-        try {
-            stream = getContentResolver().openInputStream(fileUri);
-        } catch (NullPointerException | FileNotFoundException e) {
-            soundNameEditText.setError("Could not open file");
-            return;
-        }
-
-        viewModel.addLocalSound(stream)
-                .observe(this, soundWrapper -> {
+        viewModel.trimFile(getStart(), getEnd()).observe(this, uri -> {
+            try {
+                InputStream stream = getContentResolver().openInputStream(uri);
+                viewModel.addLocalSound(stream).observe(this, soundWrapper -> {
                     assert soundWrapper != null;
                     if (soundWrapper.exception != null) {
                         soundNameEditText.setError(soundWrapper.exception.getMessage());
@@ -111,6 +105,10 @@ public class AddSoundActivity extends AppCompatActivity {
                         finish();
                     }
                 });
+            } catch (NullPointerException | FileNotFoundException e) {
+                soundNameEditText.setError("File not found");
+            }
+        });
     }
 
     @Override
@@ -148,18 +146,7 @@ public class AddSoundActivity extends AppCompatActivity {
     @OnClick(R.id.playStopButton)
     public void playStop() {
         if (viewModel.getPlayingSound().getValue() == null) {
-
-            int start = 0, end = 0;
-            try {
-                start = Integer.parseInt(startEditText.getText().toString());
-            } catch (NumberFormatException ignored) {
-            }
-            try {
-                end = Integer.parseInt(endEditText.getText().toString());
-            } catch (NumberFormatException ignored) {
-            }
-
-            viewModel.trimFile(start, end).observe(this, uri -> {
+            viewModel.trimFile(getStart(), getEnd()).observe(this, uri -> {
                 if (uri != null) {
                     viewModel.play(uri);
                 }
@@ -167,5 +154,23 @@ public class AddSoundActivity extends AppCompatActivity {
         } else {
             viewModel.stop();
         }
+    }
+
+    public int getStart() {
+        int start = 0;
+        try {
+            start = Integer.parseInt(startEditText.getText().toString());
+        } catch (NumberFormatException ignored) {
+        }
+        return start;
+    }
+
+    public int getEnd() {
+        int end = 0;
+        try {
+            end = Integer.parseInt(endEditText.getText().toString());
+        } catch (NumberFormatException ignored) {
+        }
+        return end;
     }
 }

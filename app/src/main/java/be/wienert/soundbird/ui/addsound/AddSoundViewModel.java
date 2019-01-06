@@ -23,7 +23,7 @@ public class AddSoundViewModel extends AndroidViewModel {
     private DataManager dataManager;
     private final SoundPlayer soundPlayer;
     private MutableLiveData<Uri> fileUri = new MutableLiveData<>();
-    private MediatorLiveData<Uri> trimmedUri = new MediatorLiveData<>();
+    private Uri trimmedUri = null;
     private MutableLiveData<String> soundName = new MutableLiveData<>();
     private int duration = 0;
 
@@ -77,11 +77,15 @@ public class AddSoundViewModel extends AndroidViewModel {
         end = Math.max(Math.min(end, duration), 0);
         start = Math.max(Math.min(start, end), 0);
         Uri fileUri = this.fileUri.getValue();
-        if (trimmedUri.getValue() != null) {
-            new File(trimmedUri.getValue().getPath()).delete();
+        if (trimmedUri != null) {
+            new File(trimmedUri.getPath()).delete();
         }
-        trimmedUri.addSource(soundTrimmer.trim(fileUri, start, end), uri -> trimmedUri.setValue(uri));
-        return trimmedUri;
+        MediatorLiveData<Uri> data = new MediatorLiveData<>();
+        data.addSource(soundTrimmer.trim(fileUri, start, end), uri -> {
+            data.setValue(uri);
+            trimmedUri = uri;
+        });
+        return data;
     }
 
     public int getDuration() {
