@@ -10,8 +10,18 @@
         android:id="@+id/nameTextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingHorizontal="10dp"
         android:gravity="center"
         android:textSize="20sp"
-        android:background="@drawable/button_style"/>
+        android:background="@drawable/button_style"
+
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+
+        />
 
 </LinearLayout>
