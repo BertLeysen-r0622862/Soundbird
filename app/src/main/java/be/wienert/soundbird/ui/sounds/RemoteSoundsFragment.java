@@ -24,6 +24,7 @@ public class RemoteSoundsFragment extends SoundsFragment {
     private void add(Sound sound) {
         viewModel.addRemoteToLocal(sound).observe(this, soundWrapper -> {
             assert soundWrapper != null;
+
             if (soundWrapper.exception != null) {
                 return;
             }

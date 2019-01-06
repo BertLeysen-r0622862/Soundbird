@@ -15,6 +15,7 @@ import be.wienert.soundbird.util.SoundPlayer;
 public class SoundsViewModel extends AndroidViewModel {
     private DataManager dataManager;
     private SoundPlayer soundPlayer;
+
     private LiveData<List<Sound>> localSounds = null;
     private LiveData<List<Sound>> remoteSounds = null;
 

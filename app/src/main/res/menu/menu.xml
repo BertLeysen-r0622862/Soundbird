@@ -13,4 +13,8 @@
         android:title="Upload"
         app:showAsAction="never"
         android:orderInCategory="100"></item>
+    <item android:id="@+id/shareButton"
+        android:title="Share"
+        app:showAsAction="never"
+        android:orderInCategory="100"></item>
 </menu>

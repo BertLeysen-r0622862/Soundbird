@@ -19,10 +19,12 @@ public class DataManager {
     private SoundDatabaseHelper localDb;
     private RestApi restApi;
 
+
     public DataManager(Context context) {
         localDb = new SoundDatabaseHelper(context);
         restApi = new RestApi();
         this.context = context;
+
     }
 
     private static LiveData<SoundWrapper> doAsync(AsyncSoundTask task) {
