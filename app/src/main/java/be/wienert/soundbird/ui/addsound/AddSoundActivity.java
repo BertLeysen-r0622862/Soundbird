@@ -35,6 +35,12 @@ public class AddSoundActivity extends AppCompatActivity {
     @BindView(R.id.playStopButton)
     Button playStopButton;
 
+    @BindView(R.id.startEditText)
+    EditText startEditText;
+
+    @BindView(R.id.endEditText)
+    EditText endEditText;
+
     AddSoundViewModel viewModel;
 
     @Override
@@ -64,6 +70,8 @@ public class AddSoundActivity extends AppCompatActivity {
             } else {
                 selectedFileTextView.setText(getFileName(fileUri));
             }
+            startEditText.setText("0");
+            endEditText.setText(Integer.toString(viewModel.getDuration()));
         });
     }
 
@@ -81,6 +89,7 @@ public class AddSoundActivity extends AppCompatActivity {
             viewModel.setSoundName(soundNameEditText.getText().toString());
         } catch (IllegalArgumentException e) {
             soundNameEditText.setError(e.getMessage());
+            return;
         }
 
         Uri fileUri = viewModel.getFileUri().getValue();
@@ -88,7 +97,7 @@ public class AddSoundActivity extends AppCompatActivity {
         InputStream stream;
         try {
             stream = getContentResolver().openInputStream(fileUri);
-        } catch (FileNotFoundException e) {
+        } catch (NullPointerException | FileNotFoundException e) {
             soundNameEditText.setError("Could not open file");
             return;
         }
@@ -138,6 +147,25 @@ public class AddSoundActivity extends AppCompatActivity {
 
     @OnClick(R.id.playStopButton)
     public void playStop() {
-        viewModel.playStop();
+        if (viewModel.getPlayingSound().getValue() == null) {
+
+            int start = 0, end = 0;
+            try {
+                start = Integer.parseInt(startEditText.getText().toString());
+            } catch (NumberFormatException ignored) {
+            }
+            try {
+                end = Integer.parseInt(endEditText.getText().toString());
+            } catch (NumberFormatException ignored) {
+            }
+
+            viewModel.trimFile(start, end).observe(this, uri -> {
+                if (uri != null) {
+                    viewModel.play(uri);
+                }
+            });
+        } else {
+            viewModel.stop();
+        }
     }
 }
