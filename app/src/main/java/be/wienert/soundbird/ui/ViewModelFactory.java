@@ -44,7 +44,7 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(AddSoundViewModel.class)) {
             //noinspection unchecked
-            return (T) new AddSoundViewModel(application, dataManager);
+            return (T) new AddSoundViewModel(application, dataManager, soundPlayer);
         } else if (modelClass.isAssignableFrom(MainViewModel.class)) {
             //noinspection unchecked
             return (T) new MainViewModel(application, soundPlayer);
