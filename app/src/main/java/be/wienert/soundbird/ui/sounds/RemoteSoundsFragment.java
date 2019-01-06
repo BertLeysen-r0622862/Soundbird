@@ -16,9 +16,15 @@ public class RemoteSoundsFragment extends SoundsFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel.getRemoteSounds().observe(this, sounds -> soundsRecyclerView.setSounds(sounds));
+        viewModel.getRemoteSounds().observe(this, sounds -> {
+            soundsRecyclerView.setSounds(sounds);
+            swipeContainer.setRefreshing(false);
+        });
 
         soundsRecyclerView.setOnLongClickListener(this::add);
+
+        swipeContainer.setEnabled(true);
+        swipeContainer.setOnRefreshListener(() -> viewModel.getRemoteSounds());
     }
 
     private void add(Sound sound) {
