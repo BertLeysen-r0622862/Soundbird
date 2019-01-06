@@ -1,6 +1,7 @@
 package be.wienert.soundbird.data.remote;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ public class RestApi {
     private static String SERVER_URL = "http://178.128.244.80/";
 
     private ApiContract service;
+    private MediatorLiveData<List<Sound>> soundsLiveData = new MediatorLiveData<>();
 
     public RestApi() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -39,7 +41,6 @@ public class RestApi {
     }
 
     public LiveData<List<Sound>> getSounds() {
-        final MutableLiveData<List<Sound>> data = new MutableLiveData<>();
         service.getSounds().enqueue(new Callback<List<RestApiSound>>() {
             @Override
             public void onResponse(@NonNull Call<List<RestApiSound>> call, @NonNull Response<List<RestApiSound>> response) {
@@ -49,18 +50,18 @@ public class RestApi {
                     for (RestApiSound sound : restSounds) {
                         sounds.add(new Sound(UUID.fromString(sound.uuid), Uri.parse(sound.uri), sound.name));
                     }
-                    data.setValue(sounds);
+                    soundsLiveData.setValue(sounds);
                 } else {
-                    data.setValue(null);
+                    soundsLiveData.setValue(null);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<RestApiSound>> call, @NonNull Throwable t) {
-                data.setValue(null);
+                soundsLiveData.setValue(null);
             }
         });
-        return data;
+        return soundsLiveData;
     }
 
     public LiveData<Sound> addSound(Sound sound) {
@@ -88,6 +89,8 @@ public class RestApi {
                 data.setValue(null);
             }
         });
+
+        soundsLiveData.addSource(data, sound1 -> getSounds());
 
         return data;
     }
