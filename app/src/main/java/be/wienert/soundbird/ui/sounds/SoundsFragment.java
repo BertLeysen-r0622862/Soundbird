@@ -57,7 +57,7 @@ public abstract class SoundsFragment extends Fragment {
 
 
         soundsRecyclerView.setOnClickListener(sound -> {
-            int pos =0;
+            /*int pos =0;
             boolean found = false;
             for (Sound s : soundsRecyclerView.getSounds()){
                 if (!found) {
@@ -67,11 +67,11 @@ public abstract class SoundsFragment extends Fragment {
 
                 }
             }
-            View buttonview = recyclerView.findViewHolderForAdapterPosition(pos).itemView;
+            View buttonview = recyclerView.findViewHolderForAdapterPosition(pos).itemView;*/
             try {
-                myAnim.setDuration(viewModel.getDuration(sound));
-                buttonview.setAnimation(myAnim);
-                buttonview.animate();
+                //myAnim.setDuration(viewModel.getDuration(sound));
+                //buttonview.setAnimation(myAnim);
+                //buttonview.animate();
                 viewModel.play(sound);
             } catch (IOException e) {
                 e.printStackTrace();
