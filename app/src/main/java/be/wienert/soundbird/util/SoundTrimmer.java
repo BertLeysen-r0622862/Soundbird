@@ -3,69 +3,61 @@ package be.wienert.soundbird.util;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
-
-import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
-import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
+import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler;
+import nl.bravobit.ffmpeg.FFmpeg;
+
 public class SoundTrimmer {
 
     private Context context;
-    private FFmpeg ffmpegInstance = null;
+    private FFmpeg ffmpeg;
 
     public SoundTrimmer(Context context) {
         this.context = context;
-        FFmpeg ffmpeg = FFmpeg.getInstance(context);
-        try {
-            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
-
-                @Override
-                public void onStart() {}
-
-                @Override
-                public void onFailure() {}
-
-                @Override
-                public void onSuccess() {
-                    ffmpegInstance = ffmpeg;
-                }
-
-                @Override
-                public void onFinish() {}
-            });
-        } catch (FFmpegNotSupportedException ignored) {
+        ffmpeg = FFmpeg.getInstance(context);
+        if (!ffmpeg.isSupported()) {
+            ffmpeg = null;
         }
     }
 
-    public LiveData<File> trim(InputStream stream, int start, int end) {
-        MutableLiveData<File> data = new MutableLiveData<>();
-        if (ffmpegInstance == null) {
+    public LiveData<Uri> trim(InputStream stream, int start, int end) {
+        MutableLiveData<Uri> data = new MutableLiveData<>();
+        if (ffmpeg == null) {
             data.setValue(null);
             return data;
         }
 
-        File input, output;
+        File input;
         try {
             input = File.createTempFile(UUID.randomUUID().toString(), null, context.getCacheDir());
-            output = File.createTempFile(UUID.randomUUID().toString(), null, context.getCacheDir());
+//            output = File.createTempFile(UUID.randomUUID().toString(), null, context.getCacheDir());
         } catch (IOException e) {
             data.setValue(null);
             return data;
         }
 
-        String[] cmd = {"-ss " + start + " -t " + end + " -i " + input.getAbsolutePath() + " -acodec copy " + output.getAbsolutePath()};
+        Uri output = Uri.fromFile(new File(context.getCacheDir(), UUID.randomUUID().toString()));
+
+        String[] cmd = {
+                "-ss", Integer.toString(start),
+                "-to", Integer.toString(end),
+                "-i", input.getAbsolutePath(),
+                "-acodec", "copy",
+                "-f", "mp3",
+                output.getPath()};
 
         try {
             FileUtil.copy(stream, input);
-            ffmpegInstance.setTimeout(10000);
-            ffmpegInstance.execute(cmd, new ExecuteBinaryResponseHandler() {
+//            ffmpeg.setTimeout(5000);
+            ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
 
                 @Override
                 public void onStart() {}
@@ -85,14 +77,37 @@ public class SoundTrimmer {
                 }
 
                 @Override
-                public void onFinish() {}
+                public void onFinish() {
+
+                }
             });
-        } catch (FFmpegCommandAlreadyRunningException | IOException e) {
+        } catch (IOException e) {
             input.delete();
-            output.delete();
             data.setValue(null);
         }
 
         return data;
+    }
+
+    public LiveData<Uri> trim(Uri uri, int start, int end) {
+        try {
+            InputStream stream = context.getContentResolver().openInputStream(uri);
+            return trim(stream, start, end);
+        } catch (FileNotFoundException | NullPointerException e) {
+            MutableLiveData<Uri> data = new MutableLiveData<>();
+            data.setValue(null);
+            return data;
+        }
+    }
+
+    public int getDuration(Uri uri) {
+        try {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(context, uri);
+            String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            return Integer.parseInt(durationStr) / 1000;
+        } catch (Exception ignored) {
+            return 0;
+        }
     }
 }
