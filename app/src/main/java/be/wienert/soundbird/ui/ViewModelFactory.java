@@ -11,6 +11,7 @@ import be.wienert.soundbird.ui.addsound.AddSoundViewModel;
 import be.wienert.soundbird.ui.main.MainViewModel;
 import be.wienert.soundbird.ui.sounds.SoundsViewModel;
 import be.wienert.soundbird.util.SoundPlayer;
+import be.wienert.soundbird.util.SoundTrimmer;
 
 public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
@@ -20,11 +21,13 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final Application application;
     private final DataManager dataManager;
     private final SoundPlayer soundPlayer;
+    private final SoundTrimmer soundTrimmer;
 
     private ViewModelFactory(Application application) {
         this.application = application;
         dataManager = new DataManager(application);
         soundPlayer = new SoundPlayer(application);
+        soundTrimmer = new SoundTrimmer(application);
     }
 
     public static ViewModelFactory getInstance(Application application) {
@@ -44,7 +47,7 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(AddSoundViewModel.class)) {
             //noinspection unchecked
-            return (T) new AddSoundViewModel(application, dataManager, soundPlayer);
+            return (T) new AddSoundViewModel(application, dataManager, soundPlayer, soundTrimmer);
         } else if (modelClass.isAssignableFrom(MainViewModel.class)) {
             //noinspection unchecked
             return (T) new MainViewModel(application, soundPlayer);
