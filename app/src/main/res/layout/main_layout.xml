@@ -23,6 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:tabSelectedTextColor="@color/white"
             app:tabIndicatorColor="@color/white"
+            app:tabIndicatorHeight="5dp"
             />
 
         <SearchView
