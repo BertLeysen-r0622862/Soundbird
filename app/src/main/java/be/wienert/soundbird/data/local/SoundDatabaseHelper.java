@@ -6,13 +6,13 @@ import android.content.Context;
 import android.net.Uri;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
 import be.wienert.soundbird.data.model.Sound;
+import be.wienert.soundbird.util.FileUtil;
 
 public class SoundDatabaseHelper {
     private final SoundDatabase db;
@@ -31,7 +31,7 @@ public class SoundDatabaseHelper {
         UUID uuid = UUID.randomUUID();
         File file = new File(context.getFilesDir(), uuid.toString() + ".mp3");
         long max_size = 1000000;
-        long size = copy(inputStream, file, max_size);
+        long size = FileUtil.copy(inputStream, file, max_size);
         if (size > max_size) {
             throw new IllegalArgumentException("File too big");
         }
@@ -39,24 +39,6 @@ public class SoundDatabaseHelper {
         Sound sound = new Sound(uuid, Uri.fromFile(file), name);
         db.soundDao().insert(sound);
         return sound;
-    }
-
-    private long copy(InputStream inputStream, File dst, long maxSize) throws IOException {
-        long size = 0;
-        try (FileOutputStream outStream = new FileOutputStream(dst)) {
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = inputStream.read(buf)) > 0 && size < maxSize) {
-                outStream.write(buf, 0, len);
-                size += len;
-            }
-        } finally {
-            inputStream.close();
-            if (size >= maxSize) {
-                dst.delete();
-            }
-        }
-        return size;
     }
 
     public void delete(Sound sound) {

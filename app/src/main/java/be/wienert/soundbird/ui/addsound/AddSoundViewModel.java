@@ -14,17 +14,20 @@ import java.util.UUID;
 import be.wienert.soundbird.data.DataManager;
 import be.wienert.soundbird.data.model.Sound;
 import be.wienert.soundbird.util.SoundPlayer;
+import be.wienert.soundbird.util.SoundTrimmer;
 
 public class AddSoundViewModel extends AndroidViewModel {
+    private final SoundTrimmer soundTrimmer;
     private DataManager dataManager;
     private final SoundPlayer soundPlayer;
     private MutableLiveData<Uri> fileUri = new MutableLiveData<>();
     private MutableLiveData<String> soundName = new MutableLiveData<>();
 
-    public AddSoundViewModel(@NonNull Application application, DataManager dataManager, SoundPlayer soundPlayer) {
+    public AddSoundViewModel(@NonNull Application application, DataManager dataManager, SoundPlayer soundPlayer, SoundTrimmer soundTrimmer) {
         super(application);
         this.dataManager = dataManager;
         this.soundPlayer = soundPlayer;
+        this.soundTrimmer = soundTrimmer;
     }
 
     public LiveData<DataManager.SoundWrapper> addLocalSound(InputStream inputStream) {

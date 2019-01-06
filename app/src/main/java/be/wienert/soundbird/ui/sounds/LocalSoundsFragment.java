@@ -135,4 +135,18 @@ public class LocalSoundsFragment extends SoundsFragment {
         });
         snackbar.show();
     }
+
+    private void filter(String string){
+        List<Sound> sounds = new ArrayList<>(Objects.requireNonNull(viewModel.getLocalSounds().getValue()));
+        for(Sound sound: sounds){
+           if(sound.getName().contains(string)){
+
+           }
+           else{
+               sounds.remove(sound);
+           }
+        }
+        soundsRecyclerView.setSounds(sounds);
+
+    }
 }
