@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -63,16 +65,14 @@ public class LocalSoundsFragment extends SoundsFragment {
     }
 
     private void share(Sound sound) {
-
-        String sharePath = sound.getUri().getPath();
-        Uri uri = Uri.parse(sharePath);
+        Uri path = FileProvider.getUriForFile(Objects.requireNonNull(getContext()),
+                "be.wienert.soundbird", new File(sound.getUri().getPath()));
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("audio/mp3");
-        share.putExtra(Intent.EXTRA_STREAM, uri);
+        share.putExtra(Intent.EXTRA_STREAM, path);
+        share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivity(Intent.createChooser(share, "Share Sound File"));
-
     }
-
 
     private void upload(Sound sound) {
         viewModel.addLocalToRemote(sound).observe(this, sound2 -> {
