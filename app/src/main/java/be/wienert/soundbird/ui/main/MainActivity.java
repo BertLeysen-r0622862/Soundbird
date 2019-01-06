@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel = getViewModel();
         viewModel.getPlayingSound().observe(this, sound -> {
+
             if (sound != null) {
                 stopSoundButton.show();
             } else {

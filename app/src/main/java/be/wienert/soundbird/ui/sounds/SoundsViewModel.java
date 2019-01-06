@@ -3,6 +3,7 @@ package be.wienert.soundbird.ui.sounds;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.media.MediaMetadataRetriever;
 import android.support.annotation.NonNull;
 
 import java.io.IOException;
@@ -12,9 +13,12 @@ import be.wienert.soundbird.data.DataManager;
 import be.wienert.soundbird.data.model.Sound;
 import be.wienert.soundbird.util.SoundPlayer;
 
+import static android.media.MediaMetadataRetriever.METADATA_KEY_DURATION;
+
 public class SoundsViewModel extends AndroidViewModel {
     private DataManager dataManager;
     private SoundPlayer soundPlayer;
+    private MediaMetadataRetriever mmdr = new MediaMetadataRetriever();
 
     public SoundsViewModel(@NonNull Application application, DataManager dataManager, SoundPlayer soundPlayer) {
         super(application);
@@ -32,6 +36,13 @@ public class SoundsViewModel extends AndroidViewModel {
 
     public void play(Sound sound) throws IOException {
         soundPlayer.play(sound);
+    }
+
+    public int getDuration(Sound sound){
+        mmdr.setDataSource(sound.getUri().getPath());
+        String durationStr = mmdr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        int millSecond = Integer.parseInt(durationStr);
+        return millSecond;
     }
 
     public LiveData<DataManager.SoundWrapper> delete(Sound sound) {
